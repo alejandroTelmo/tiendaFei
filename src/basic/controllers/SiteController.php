@@ -140,10 +140,10 @@ class SiteController extends Controller
      *
      * @return string
      */
-    public function actionVue()
+    public function actionProducto()
     {
-        return $this->render('vue');
+        return $this->render('producto');
     }
 
-
+ 
 }

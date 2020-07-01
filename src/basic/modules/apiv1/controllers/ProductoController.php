@@ -11,41 +11,19 @@ class ProductoController extends ActiveController
 {
   public $modelClass='app\modules\apiv1\models\Producto';
 
-
-  public function behaviors()
-  {
-      $behaviors = parent::behaviors();
-
-      // remove authentication filter
-      $auth = $behaviors['authenticator'];
-      unset($behaviors['authenticator']);
-
-      // add CORS filter
-     $behaviors['corsFilter'] = [
-           'class' => \yii\filters\Cors::className(),
-        ];
-
-      // re-add authentication filter
-      $behaviors['authenticator'] = $auth;
-
-//        $behaviors['authenticator'] = [
-//            'class' => CompositeAuth::className(),
-//            'authMethods' => [
-//                [
-//                    'class' => HttpBasicAuth::className(),
-//                    'auth' => function ($username, $password) {
-//                        $user = User::find()->where(['username' => $username])->one();
-//                        if ($user!=null && $user->password == ($password)) {
-//                            return $user;
-//                        }
-//                        return null;
-//                    },
-//                ],
-////                HttpBasicAuth::class,
-//                HttpBearerAuth::className(),
-//                QueryParamAuth::className(),
-//            ],
-//        ];
-      return $behaviors;
-  }
+ /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return \yii\helpers\ArrayHelper::merge([
+                    [
+                        'class' => \yii\filters\Cors::className(),
+                        'cors' => [
+                            'Origin' => ['*'],
+                            'Access-Control-Allow-Headers' => ['Content-Type']
+                        ],
+                    ],
+                        ], parent::behaviors());
+    }
 }

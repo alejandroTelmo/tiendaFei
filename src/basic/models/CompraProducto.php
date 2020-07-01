@@ -9,6 +9,8 @@ use Yii;
  *
  * @property int $compra_id
  * @property int $producto_id
+ * @property int|null $cantidad
+ * @property float|null $costo
  *
  * @property Compra $compra
  * @property Producto $producto
@@ -30,7 +32,8 @@ class CompraProducto extends \yii\db\ActiveRecord
     {
         return [
             [['compra_id', 'producto_id'], 'required'],
-            [['compra_id', 'producto_id'], 'integer'],
+            [['compra_id', 'producto_id', 'cantidad'], 'integer'],
+            [['costo'], 'number'],
             [['compra_id', 'producto_id'], 'unique', 'targetAttribute' => ['compra_id', 'producto_id']],
             [['compra_id'], 'exist', 'skipOnError' => true, 'targetClass' => Compra::className(), 'targetAttribute' => ['compra_id' => 'id']],
             [['producto_id'], 'exist', 'skipOnError' => true, 'targetClass' => Producto::className(), 'targetAttribute' => ['producto_id' => 'id']],
@@ -45,6 +48,8 @@ class CompraProducto extends \yii\db\ActiveRecord
         return [
             'compra_id' => 'Compra ID',
             'producto_id' => 'Producto ID',
+            'cantidad' => 'Cantidad',
+            'costo' => 'Costo',
         ];
     }
 

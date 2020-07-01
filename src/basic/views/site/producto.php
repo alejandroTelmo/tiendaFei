@@ -48,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
   <button type="submit" v-on:click="modificarProducto()" v-show="estado" class="btn btn-primary">Guardar cambios</button>
 </form>
   <hr>
-  <table class="table">
+  <table class="table table-dark">
   <tr> <th>ID</th> <th>Nombre</th><th>Descripción</th> <th>Precio</th><th>Cantidad</th><th>Estado</th><th>Acción</th>  </tr>
   <tr v-for="producto in productos.data"> <td>{{producto.id}}</td> <td>  {{producto.nombre}} </td> <td>  {{producto.descripcion}} </td><td>  {{producto.precioVenta}} </td> <td> <input></td><td> <span v-if="producto.stock > 10" >En stock</span><span v-else-if="producto.stock <= 10 && producto.stock > 0">Últimas unidades</span>  <span v-else>Sin Stock</span>   </td><td> <button @click="editarProducto(producto.id)" class="btn btn-warning" >Modificar</button> <button v-on:click="deleteProductos(producto.id)" class="btn btn-danger" >Borrar</button>   </td> </tr>
   </table>

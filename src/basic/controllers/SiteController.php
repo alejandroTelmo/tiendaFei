@@ -136,7 +136,7 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays vue page.
+     * Displays vue page producto.
      *
      * @return string
      */
@@ -144,6 +144,17 @@ class SiteController extends Controller
     {
         return $this->render('producto');
     }
+
+        /**
+     * Displays vue page cliente.
+     *
+     * @return string
+     */
+    public function actionCliente()
+    {
+        return $this->render('cliente');
+    }
+
 
  
 }

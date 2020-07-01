@@ -9,5 +9,5 @@ use yii\rest\ActiveController;
  */
 class Cliente extends \app\models\Cliente
 {
-  
+
 }

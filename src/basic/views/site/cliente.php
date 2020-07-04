@@ -57,12 +57,30 @@ $this->params['breadcrumbs'][] = $this->title;
   <button type="submit" v-on:click="modificarCliente()" v-show="estado" class="btn btn-primary">Guardar cambios</button>
 </form>
   <hr>
-  <table class="table">
-  <tr> <th>ID</th> <th>Nombre</th><th>Apellido</th> <th>Telefono</th><th>Cuit</th><th>Ciudad</th> <th>Id_Domicilio</th>   <th>ID tipos de pago</th>          <th>Estado</th><th>Acción</th>  </tr>
-  <tr v-for="cliente in clientes.data"> <td>{{cliente.id}}</td> <td>  {{cliente.nombre}} </td> <td>  {{cliente.apellido}} </td><td>  {{cliente.telefono}} </td><td>{{cliente.cuit}}</td> <td>{{cliente.ciudad}}</td><td>{{cliente.id_domicilio}}</td> <td>{{cliente.id_tiposDePago}}</td> <td> <input></td><td> <span v-if="cliente.corriente > 30" >Deudor Moroso</span><span v-else-if="cliente.id_tiposDePago==9">Deudor Normal</span>  <span v-else>NO tiene cta cte</span>   </td><td> <button @click="editarCliente(cliente.id)" class="btn btn-warning" >Modificar</button> <button v-on:click="deleteCliente(cliente.id)" class="btn btn-danger" >Borrar</button>   </td> </tr>
+
+
+  <label>Buscar cliente</label>
+  <input v-model="buscar" ><br>
+
+  
+  <hr>
+
+  
+   
+  <table class="table" v-show="buscar" >
+            <tr> <th>ID</th> <th>Nombre</th><th>Apellido</th> <th>Telefono</th><th>Cuit</th><th>Ciudad</th> <th>Id_Domicilio</th>   <th>ID tipos de pago</th>          <th>Estado</th><th>Acción</th>  </tr>
+    <tr v-for="item in clientesFiltro"> <td>{{item.id}}</td> <td>  {{item.nombre}} </td> <td>  {{item.apellido}} </td><td>  {{item.telefono}} </td><td>{{item.cuit}}</td> <td>{{item.ciudad}}</td><td>{{item.id_domicilio}}</td> <td>{{item.id_tiposDePago}}</td> <td> <span v-if="item.corriente > 30" >Deudor Moroso</span><span v-else-if="item.id_tiposDePago==9">Deudor Normal</span>  <span v-else>NO tiene cta cte</span>   </td><td> <button @click="editarCliente(item.id)" class="btn btn-warning" >Modificar</button> <button v-on:click="deleteCliente(item.id)" class="btn btn-danger" >Borrar</button>   </td> </tr>
+    </table>
+     
+
+    </ul>
+
+  <table class="table" v-show="!buscar" >
+    <tr> <th>ID</th> <th>Nombre</th><th>Apellido</th> <th>Telefono</th><th>Cuit</th><th>Ciudad</th> <th>Id_Domicilio</th>   <th>ID tipos de pago</th>          <th>Estado</th><th>Acción</th>  </tr>
+    <tr v-for="cliente in clientes.data"> <td>{{cliente.id}}</td> <td>  {{cliente.nombre}} </td> <td>  {{cliente.apellido}} </td><td>  {{cliente.telefono}} </td><td>{{cliente.cuit}}</td> <td>{{cliente.ciudad}}</td><td>{{cliente.id_domicilio}}</td> <td>{{cliente.id_tiposDePago}}</td> <td> <span v-if="cliente.corriente > 30" >Deudor Moroso</span><span v-else-if="cliente.id_tiposDePago==9">Deudor Normal</span>  <span v-else>NO tiene cta cte</span>   </td><td> <button @click="editarCliente(cliente.id)" class="btn btn-warning" >Modificar</button> <button v-on:click="deleteCliente(cliente.id)" class="btn btn-danger" >Borrar</button>   </td> </tr>
   </table>
 
-  </div>
+  </div> 
   
 <script>
 var app=new Vue ({
@@ -77,18 +95,31 @@ var app=new Vue ({
         nuevoPago:null,
         nuevoDomicilio:null,
         estado:false,
+        buscar:"",
+        nombre:"",
+        item:"",
+        clienteNombre:null,
+        
         clientes: {
             selected:null,
             data: [
 
-            ]
+            ],
 
         }
-
+       
     },
 
     computed:{
-
+             clientesFiltro:function(){
+                return this.clientes.data.filter((item) => {
+                 return item.nombre.toLowerCase().includes(this.buscar.toLowerCase()) ||
+                 item.apellido.toLowerCase().includes(this.buscar.toLowerCase()) ||
+                 item.cuit.toLowerCase().includes(this.buscar.toLowerCase()) ||
+                 item.id.toLowerCase().includes(this.buscar.toLowerCase()) ||
+                 item.telefono.toLowerCase().includes(this.buscar.toLowerCase()) 
+                })
+             }
     },
 
     mounted(){
@@ -112,6 +143,7 @@ var app=new Vue ({
                 // always executed
             });
         },
+     
         editarCliente: function(id){ 
         var that = this ;
         axios.get('/apiv1/cliente/'+ id)
@@ -201,7 +233,7 @@ var app=new Vue ({
             id_tiposDePago: pag
 
   
-  })
+     })
             .then(function (response) {
                 // handle success 
                console.log(response.data);
@@ -217,7 +249,7 @@ var app=new Vue ({
             
         },
     },
-
+  
   
 
 

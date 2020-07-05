@@ -48,7 +48,18 @@ $this->params['breadcrumbs'][] = $this->title;
   <button type="submit" v-on:click="modificarProducto()" v-show="estado" class="btn btn-primary">Guardar cambios</button>
 </form>
   <hr>
-  <table class="table table-dark">
+<div>
+<label>Buscar producto</label><input v-model="buscar" ><p v-if="busqueda"> {{nada}} </p>
+</div>
+
+  <table class="table" v-show="buscar" >
+  <tr> <th>ID</th> <th>Nombre</th><th>Descripción</th> <th>Precio</th><th>Cantidad</th><th>Estado</th><th>Acción</th>  </tr>
+  <tr v-for="item in productosFiltro"> <td>{{item.id}}</td> <td>  {{item.nombre}} </td> <td>  {{item.descripcion}} </td><td>  {{item.precioVenta}} </td> <td> <input></td><td> <span v-if="item.stock > 10" >En stock</span><span v-else-if="item.stock <= 10 && item.stock > 0">Últimas unidades</span>  <span v-else>Sin Stock</span>   </td><td> <button @click="editarProducto(item.id)" class="btn btn-warning" >Modificar</button> <button v-on:click="deleteProductos(item.id)" class="btn btn-danger" >Borrar</button>   </td> </tr>
+
+    </table>
+     
+
+  <table class="table table-dark" v-show="!buscar">
   <tr> <th>ID</th> <th>Nombre</th><th>Descripción</th> <th>Precio</th><th>Cantidad</th><th>Estado</th><th>Acción</th>  </tr>
   <tr v-for="producto in productos.data"> <td>{{producto.id}}</td> <td>  {{producto.nombre}} </td> <td>  {{producto.descripcion}} </td><td>  {{producto.precioVenta}} </td> <td> <input></td><td> <span v-if="producto.stock > 10" >En stock</span><span v-else-if="producto.stock <= 10 && producto.stock > 0">Últimas unidades</span>  <span v-else>Sin Stock</span>   </td><td> <button @click="editarProducto(producto.id)" class="btn btn-warning" >Modificar</button> <button v-on:click="deleteProductos(producto.id)" class="btn btn-danger" >Borrar</button>   </td> </tr>
   </table>
@@ -66,6 +77,8 @@ var app=new Vue ({
         nuevoCantidad:null,
         nuevoPrecio:null,
         estado:false,
+        busqueda:false,
+        buscar:"",
         productos: {
             selected:null,
             data: [
@@ -77,6 +90,21 @@ var app=new Vue ({
     },
 
     computed:{
+        productosFiltro:function(){
+               
+                return this.productos.data.filter((item) => {
+
+                 return item.nombre.toLowerCase().includes(this.buscar.toLowerCase()) ||
+
+                 item.descripcion.toLowerCase().includes(this.buscar.toLowerCase()) 
+            
+
+
+
+              
+                    
+                })
+             }
 
     },
 

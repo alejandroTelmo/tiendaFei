@@ -21,8 +21,8 @@ $this->params['breadcrumbs'][] = $this->title;
   <div id="app">
       
 
-<form>
-<div class="form-group">
+<form v-show="nuevoModificar">
+<div class="form-group" >
     <label for="id" v-show="ciego">Id</label>
     <input type="number" class="form-control" v-model="idModificar" id="id" aria-describedby="emailHelp" v-show="ciego">
 
@@ -44,17 +44,19 @@ $this->params['breadcrumbs'][] = $this->title;
     <label for="precio">Precio</label>
     <input type="number" class="form-control" id="precio"  v-model="nuevoPrecio" placeholder="Ingrese precio de venta del producto">
   </div>
-  <button type="submit" v-on:click="agregarProductos" class="btn btn-primary">Nuevo producto</button>
+  <button type="submit" v-on:click.prevent="agregarProductos" class="btn btn-primary">Nuevo producto</button>
   <button type="submit" v-on:click="modificarProducto()" v-show="estado" class="btn btn-primary">Guardar cambios</button>
 </form>
+<button class="btn btn-success" v-show="!nuevoModificar"v-on:click="nuevoModificar = !nuevoModificar" >Crear producto</button>
   <hr>
-<div>
-<label>Buscar producto</label><input v-model="buscar" ><p v-if="busqueda"> {{nada}} </p>
-</div>
+<form class="form-group">
+<label for="buscar1">Buscar producto</label>
 
+<input v-model="buscar" id="buscar1"><p v-if="busqueda"> {{nada}} </p>
+</form>
   <table class="table" v-show="buscar" >
   <tr> <th>ID</th> <th>Nombre</th><th>Descripción</th> <th>Precio</th><th>Cantidad</th><th>Estado</th><th>Acción</th>  </tr>
-  <tr v-for="item in productosFiltro"> <td>{{item.id}}</td> <td>  {{item.nombre}} </td> <td>  {{item.descripcion}} </td><td>  {{item.precioVenta}} </td> <td> <input></td><td> <span v-if="item.stock > 10" >En stock</span><span v-else-if="item.stock <= 10 && item.stock > 0">Últimas unidades</span>  <span v-else>Sin Stock</span>   </td><td> <button @click="editarProducto(item.id)" class="btn btn-warning" >Modificar</button> <button v-on:click="deleteProductos(item.id)" class="btn btn-danger" >Borrar</button>   </td> </tr>
+  <tr v-for="item in productosFiltro"> <td>{{item.id}}</td> <td>  {{item.nombre}} </td> <td>  {{item.descripcion}} </td><td>  {{item.precioVenta}} </td> <td> <input></td><td> <span v-if="item.stock > 10" >En stock</span><span v-else-if="item.stock <= 10 && item.stock > 0">Últimas unidades</span>  <span v-else>Sin Stock</span>   </td><td> <button  @click="editarProducto(item.id)" class="btn btn-warning">Modificar</button> <button v-on:click="deleteProductos(item.id)" class="btn btn-danger" >Borrar</button>   </td> </tr>
 
     </table>
      
@@ -79,6 +81,7 @@ var app=new Vue ({
         estado:false,
         busqueda:false,
         buscar:"",
+        nuevoModificar:false,
         productos: {
             selected:null,
             data: [
@@ -131,6 +134,7 @@ var app=new Vue ({
         },
         editarProducto: function(id){ 
         var that = this ;
+        that.nuevoModificar=true,
         axios.get('/apiv1/producto/'+ id)
             
             .then(function (response) {
@@ -197,10 +201,12 @@ var app=new Vue ({
         },
         agregarProductos: function(){ 
         var that = this ;
+        
             nom=that.nuevoNombre,
             des=that.nuevoDescripcion,
             can=that.nuevoCantidad,
             pre=that.nuevoPrecio,
+          
         axios.post('/apiv1/producto', {
     nombre: nom,
     descripcion: des,
@@ -210,6 +216,11 @@ var app=new Vue ({
             .then(function (response) {
                 // handle success 
                console.log(response.data);
+            that.nuevoNombre="",
+            that.nuevoDescripcion="",
+            that.nuevoCantidad=null,
+            that.nuevoPrecio=null,
+            that.nuevoModificar=false,
                that.getProductos();
             })
             .catch(function (error) {
@@ -219,7 +230,7 @@ var app=new Vue ({
             .then(function () {
                 // always executed
             });
-            
+        
         },
     },
 

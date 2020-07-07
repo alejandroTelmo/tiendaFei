@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
   <div id="app">
       
 
-<form>
+<form v-if="nuevoModificar">
 <div class="form-group">
     <label for="id" v-show="ciego">Id</label>
     <input type="number" class="form-control" v-model="idModificar" id="id" aria-describedby="emailHelp" v-show="ciego">
